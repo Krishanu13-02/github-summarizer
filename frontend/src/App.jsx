@@ -38,70 +38,113 @@ function App() {
 
   return (
     <div className="app">
-      <h1>GitHub Summarizer</h1>
+      <header className="header">
+        <h1>
+          GitHub <span>Summarizer</span>
+        </h1>
 
-      <form onSubmit={handleSearch} className="search-form">
-        <input
-          type="text"
-          placeholder="Enter GitHub username (e.g. torvalds)"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-        />
-        <button type="submit">Summarize</button>
-      </form>
+        <form onSubmit={handleSearch} className="search-form">
+          <input
+            type="text"
+            placeholder="Enter GitHub username (e.g. torvalds)"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+          <button type="submit">Summarize</button>
+        </form>
 
-      {status === "loading" && <p>Loading...</p>}
-      {status === "error" && <p className="error">{error}</p>}
+        {status === "loading" && (
+          <p className="info-text">Fetching profile & generating summary…</p>
+        )}
+        {status === "error" && <p className="error-text">{error}</p>}
+      </header>
 
       {data && (
-        <div className="result">
-          <div className="profile-card">
-            <img
-              src={data.profile.avatar_url}
-              alt={data.profile.login}
-              className="avatar"
-            />
+        <main className="content-grid">
+          {/* Profile card */}
+          <section className="card profile-card">
+            <div className="avatar-wrapper">
+              <img
+                src={data.profile.avatar_url}
+                alt={data.profile.login}
+                className="avatar"
+              />
+            </div>
             <h2>{data.profile.name || data.profile.login}</h2>
-            <p className="bio">{data.profile.bio || "No bio provided."}</p>
-            <p>
-              <strong>Followers:</strong> {data.profile.followers} •{" "}
-              <strong>Following:</strong> {data.profile.following}
+            <p className="bio">
+              {data.profile.bio || "This user has not added a bio yet."}
             </p>
-            <p>
-              <strong>Public repos:</strong> {data.profile.public_repos}
-            </p>
+
+            <div className="stats-row">
+              <div>
+                <span className="stat-label">Followers</span>
+                <span className="stat-value">
+                  {data.profile.followers ?? 0}
+                </span>
+              </div>
+              <div>
+                <span className="stat-label">Following</span>
+                <span className="stat-value">
+                  {data.profile.following ?? 0}
+                </span>
+              </div>
+              <div>
+                <span className="stat-label">Public Repos</span>
+                <span className="stat-value">
+                  {data.profile.public_repos ?? 0}
+                </span>
+              </div>
+            </div>
+
             <a
               href={data.profile.html_url}
               target="_blank"
               rel="noreferrer"
+              className="profile-link"
             >
-              View on GitHub
+              View on GitHub →
             </a>
-          </div>
+          </section>
 
-          <div className="repos">
+          {/* Repos card */}
+          <section className="card repos-card">
             <h3>Recent Repositories</h3>
-            <ul>
+            <ul className="repo-list">
+              {data.repos.length === 0 && (
+                <li className="muted">No public repositories found.</li>
+              )}
               {data.repos.map((repo) => (
-                <li key={repo.id}>
-                  <a href={repo.html_url} target="_blank" rel="noreferrer">
+                <li key={repo.id} className="repo-item">
+                  <a
+                    href={repo.html_url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="repo-name"
+                  >
                     {repo.name}
                   </a>
-                  <p>{repo.description || "No description."}</p>
-                  <small>
-                    {repo.language || "Unknown"} • ⭐ {repo.stargazers_count}
-                  </small>
+                  <p className="repo-desc">
+                    {repo.description || "No description."}
+                  </p>
+                  <div className="repo-meta">
+                    <span className="pill">
+                      {repo.language || "Unknown language"}
+                    </span>
+                    <span className="stars">⭐ {repo.stargazers_count}</span>
+                  </div>
                 </li>
               ))}
             </ul>
-          </div>
+          </section>
 
-          {/* 🔥 AI summary from backend */}
-          <div className="summary-text">
+          {/* AI summary card */}
+          <section className="card summary-card">
             <h3>AI Summary</h3>
-            <p>{data.aiSummary || "AI summary unavailable."}</p>
-          </div>
-        </div>
+            <p className="summary-text">
+              {data.aiSummary || "AI summary unavailable."}
+            </p>
+          </section>
+        </main>
       )}
     </div>
   );
