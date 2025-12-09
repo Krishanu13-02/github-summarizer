@@ -17,7 +17,7 @@ function App() {
 
     try {
       const res = await fetch(
-        `http://localhost:4000/api/github/${username.trim()}`
+        `https://github-summarizer-backend.onrender.com/api/github/${username.trim()}`
       );
 
       const json = await res.json();
