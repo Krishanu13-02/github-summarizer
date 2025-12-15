@@ -8,6 +8,12 @@ import mongoose from "mongoose";
 const app = express();
 const PORT = process.env.PORT || 4000;
 
+// 🔥 Test Route
+app.get('/api/test', (req, res) => {
+  res.json({ message: "Backend is running" });
+});
+
+
 // ----------------- HF / OpenAI client (Hugging Face router) -----------------
 if (!process.env.HF_TOKEN) {
   console.warn("Warning: HF_TOKEN is not set in backend/.env – AI summaries will fail.");
@@ -46,7 +52,7 @@ const userSummarySchema = new mongoose.Schema(
 );
 
 const UserSummary =
-  mongoose.models?.UserSummary || mongoose.model?.("UserSummary", userSummarySchema);
+  mongoose.models.UserSummary || mongoose.model("UserSummary", userSummarySchema);
 
 // ----------------- GitHub helpers -----------------
 async function getGithubProfile(username) {
