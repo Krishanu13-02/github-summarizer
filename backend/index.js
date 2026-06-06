@@ -127,7 +127,7 @@ Return ONLY the summary. No headings, no bullet points, no extra explanations.
 
   try {
     const completion = await hf.chat.completions.create({
-      model: "mistralai/Mistral-7B-Instruct-v0.2:featherless-ai",
+      model: "meta-llama/Llama-3.1-8B-Instruct",
       messages: [{ role: "user", content: prompt }],
     });
 
