@@ -32,20 +32,6 @@ function App() {
       setData(json);
       setStatus("idle");
 
-      // 2️⃣ Save to MongoDB (NEW)
-      await fetch(`https://github-summarizer-backend.onrender.com/api/save-summary`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          username: username.trim(),
-          profile: json.profile,
-          repos: json.repos,
-          aiSummary: json.aiSummary,
-        }),
-      });
-
-      console.log("Saved to MongoDB ✔");
-
     } catch (err) {
       setStatus("error");
       setError("Failed to reach server");
@@ -76,12 +62,51 @@ function App() {
       </header>
 
       {data && (
-        <main className="content-grid">
-          {/* Profile card */}
-          {/* (Your entire UI unchanged, I kept everything exactly same) */}
-          ...
-        </main>
-      )}
+  <main className="content-grid">
+
+    <section className="card">
+      <img
+        src={data.profile.avatar_url}
+        alt={data.profile.login}
+        width="120"
+      />
+
+      <h2>{data.profile.name}</h2>
+      <p>@{data.profile.login}</p>
+
+      <p>{data.profile.bio}</p>
+
+      <p>
+        Followers: {data.profile.followers} | Repos: {data.profile.public_repos}
+      </p>
+    </section>
+
+    <section className="card">
+      <h2>AI Summary</h2>
+
+      <p>{data.aiSummary}</p>
+    </section>
+
+    <section className="card">
+      <h2>Repositories</h2>
+
+      {data.repos.map((repo) => (
+        <div key={repo.id}>
+          <h3>{repo.name}</h3>
+
+          <p>{repo.description || "No description"}</p>
+
+          <small>
+            {repo.language} • ⭐ {repo.stargazers_count}
+          </small>
+
+          <hr />
+        </div>
+      ))}
+    </section>
+
+  </main>
+)}
     </div>
   );
 }
